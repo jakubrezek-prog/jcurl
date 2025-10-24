@@ -6,7 +6,7 @@ It’s designed for environments where you already have Java installed (like Doc
 Run HTTP(S) requests directly from Java:
 
 ```bash
-java -jar jcurl.jar -X GET "https://api.example.com/data" -H "Accept: application/json"
+java -jar jcurl.jar -X GET "https://httpbin.org/get" -H "Accept: application/json"
 ```
 
 ## Supported curl options
@@ -39,7 +39,7 @@ java -jar jcurl.jar https://jsonplaceholder.typicode.com/posts/1
 ```bash
 java -jar jcurl.jar -X POST \
   -H "Content-Type: application/json" \
-  -d '{"name":"John Doe","email":"john@example.com"}' \
+  -d '{"name": "John Doe", "email": "john@example.com"}' \
   https://jsonplaceholder.typicode.com/posts
 ```
 
@@ -57,7 +57,7 @@ java -jar jcurl.jar -k https://self-signed.badssl.com/
 ### Basic authentication
 
 ```bash
-java -jar jcurl.jar -u admin:secret https://api.example.com/private
+java -jar jcurl.jar -u user:passwd https://httpbin.org/basic-auth/user/passwd
 ```
 
 ## Build from source
@@ -100,7 +100,6 @@ java -jar "%JAR_FILE%" %*
 
 endlocal
 ```
-
 
 ```bash
 #!/bin/sh
