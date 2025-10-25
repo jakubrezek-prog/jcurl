@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jr.util</groupId>
     <artifactId>jcurl</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <name>jcurl</name>
     <description>Lightweight Java-based curl alternative for REST debugging.</description>
 
@@ -28,6 +28,16 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Wiremock test-->
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>3.13.1</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <properties>
