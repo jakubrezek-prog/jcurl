@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jr.util</groupId>
     <artifactId>jcurl</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     <name>jcurl</name>
     <description>Lightweight Java-based curl alternative for REST debugging.</description>
 
@@ -10,7 +10,7 @@
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.7.4</version>
+            <version>4.7.7</version>
         </dependency>
 
         <!-- JUnit 5 (Jupiter) -->
