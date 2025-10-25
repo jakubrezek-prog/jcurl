@@ -17,7 +17,7 @@ Usage: jcurl [-hikvV] [-d=<data>] [-u=<basicAuth>] [-X=<method>]
 [-H=<headerPairs>[,<headerPairs>...]]... URL
 Lightweight curl-like CLI for REST API debugging in Java.
 URL                  Target URL
--d, --data=<data>        Request body
+-d, --data=<data>        HTTP request body data, or @file to read from file
 -h, --help               Show this help message and exit.
 -H, --header=<headerPairs>[,<headerPairs>...]
 HTTP headers

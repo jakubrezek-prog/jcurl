@@ -22,7 +22,6 @@ public class JCurl implements Callable<Integer> {
     private String method;
 
     @Option(names = {"-d", "--data"},
-            paramLabel = "DATA",
             description = "HTTP request body data, or @file to read from file"
     )
     private String data;
