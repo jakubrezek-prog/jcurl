@@ -45,11 +45,14 @@ public class JCurl implements Callable<Integer> {
     @Option(names = {"-k", "--insecure"}, description = "Ignore SSL certificate errors")
     private boolean insecure;
 
-    @Parameters(paramLabel = "URL", description = "Target URL")
+    @Parameters(index = "0", paramLabel = "URL", description = "Target URL")
     private String url;
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new JCurl()).execute(args);
+       //By default, picocli will treat any argument beginning with @ as a “parameter file”
+        int exitCode = new CommandLine(new JCurl())
+                .setExpandAtFiles(false)
+                .execute(args);
         System.exit(exitCode);
     }
 
