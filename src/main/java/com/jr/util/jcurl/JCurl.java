@@ -3,21 +3,32 @@ package com.jr.util.jcurl;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 import java.util.*;
 import java.util.Base64;
 
 @Command(name = "jcurl",
         mixinStandardHelpOptions = true,
-        version = "jcurl 0.3.0",
+        version = "jcurl 0.4.0",
         description = "Lightweight curl-like CLI for REST API debugging in Java.")
 public class JCurl implements Callable<Integer> {
 
     @Option(names = {"-X", "--request"}, description = "HTTP method", defaultValue = "GET")
     private String method;
 
-    @Option(names = {"-d", "--data"}, description = "Request body")
+    @Option(names = {"-d", "--data"},
+            description = "HTTP request body data, or @file to read from file"
+    )
     private String data;
+
+    public void setData(String data) {
+        this.data = data;
+    }
 
     @Option(names = {"-H", "--header"}, description = "HTTP headers", split = ",")
     private String[] headerPairs;
@@ -50,7 +61,7 @@ public class JCurl implements Callable<Integer> {
         return 0;
     }
 
-    private JCurlConfig buildConfig() {
+    JCurlConfig buildConfig() throws IOException {
         Map<String, String> headers = new LinkedHashMap<>();
         if (headerPairs != null) {
             for (String h : headerPairs) {
@@ -64,11 +75,17 @@ public class JCurl implements Callable<Integer> {
             encodedAuth = Base64.getEncoder().encodeToString(basicAuth.getBytes());
         }
 
+        String body = data;
+        if (body != null && body.startsWith("@")) {
+            Path path = Paths.get(body.substring(1));
+            body = Files.readString(path, StandardCharsets.UTF_8);
+        }
+
         return new JCurlConfig(
                 url,
                 method,
                 headers,
-                data,
+                body,
                 encodedAuth,
                 verbose,
                 insecure,
