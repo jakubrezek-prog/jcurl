@@ -14,14 +14,17 @@ import java.util.Base64;
 
 @Command(name = "jcurl",
         mixinStandardHelpOptions = true,
-        version = "jcurl 0.3.0",
+        version = "jcurl 0.4.0",
         description = "Lightweight curl-like CLI for REST API debugging in Java.")
 public class JCurl implements Callable<Integer> {
 
     @Option(names = {"-X", "--request"}, description = "HTTP method", defaultValue = "GET")
     private String method;
 
-    @Option(names = {"-d", "--data"}, description = "Request body")
+    @Option(names = {"-d", "--data"},
+            paramLabel = "DATA",
+            description = "HTTP request body data, or @file to read from file"
+    )
     private String data;
 
     public void setData(String data) {

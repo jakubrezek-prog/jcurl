@@ -43,6 +43,15 @@ java -jar jcurl.jar -X POST \
   https://jsonplaceholder.typicode.com/posts
 ```
 
+### Sending Data from a File
+
+You can use the `-d @file` syntax to read the request body from a file:
+
+```bash
+echo '{"name":"John"}' > user.json
+jcurl -X POST -H "Content-Type: application/json" -d @user.json https://httpbin.org/post
+```
+
 ### Include headers and verbose output
 ```bash
 java -jar jcurl.jar -v -i https://httpbin.org/get
