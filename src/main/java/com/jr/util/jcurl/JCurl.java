@@ -9,7 +9,7 @@ import java.util.Base64;
 
 @Command(name = "jcurl",
         mixinStandardHelpOptions = true,
-        version = "jcurl 0.2.0",
+        version = "jcurl 0.3.0",
         description = "Lightweight curl-like CLI for REST API debugging in Java.")
 public class JCurl implements Callable<Integer> {
 
