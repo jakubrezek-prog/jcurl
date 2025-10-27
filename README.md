@@ -73,7 +73,7 @@ java -jar jcurl.jar -u user:passwd https://httpbin.org/basic-auth/user/passwd
 ### Pretty print json output
 
 ```bash
-jcurl https://api.github.com/repos/octocat/hello-world --pretty
+java -jar jcurl.jar https://api.github.com/repos/octocat/hello-world --pretty
 ```
 
 ## Build from source
