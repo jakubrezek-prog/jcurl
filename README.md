@@ -23,6 +23,7 @@ URL                  Target URL
 HTTP headers
 -i, --include            Include response headers
 -k, --insecure           Ignore SSL certificate errors
+    --pretty             Pretty-print JSON responses
 -u, --user=<basicAuth>   Basic auth username:password
 -v, --verbose            Verbose output
 -V, --version            Print version information and exit.
@@ -67,6 +68,12 @@ java -jar jcurl.jar -k https://self-signed.badssl.com/
 
 ```bash
 java -jar jcurl.jar -u user:passwd https://httpbin.org/basic-auth/user/passwd
+```
+
+### Pretty print json output
+
+```bash
+jcurl https://api.github.com/repos/octocat/hello-world --pretty
 ```
 
 ## Build from source

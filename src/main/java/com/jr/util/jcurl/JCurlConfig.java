@@ -10,4 +10,5 @@ public record JCurlConfig(
         String basicAuth,
         boolean verbose,
         boolean insecure,
-        boolean includeHeaders) {}
+        boolean includeHeaders,
+        boolean pretty) {}

@@ -14,7 +14,7 @@ import java.util.Base64;
 
 @Command(name = "jcurl",
         mixinStandardHelpOptions = true,
-        version = "jcurl 0.4.0",
+        version = "jcurl 0.5.0",
         description = "Lightweight curl-like CLI for REST API debugging in Java.")
 public class JCurl implements Callable<Integer> {
 
@@ -47,6 +47,9 @@ public class JCurl implements Callable<Integer> {
 
     @Parameters(index = "0", paramLabel = "URL", description = "Target URL")
     private String url;
+
+    @Option(names = "--pretty", description = "Pretty-print JSON responses")
+    boolean pretty;
 
     public static void main(String[] args) {
        //By default, picocli will treat any argument beginning with @ as a “parameter file”
@@ -92,8 +95,8 @@ public class JCurl implements Callable<Integer> {
                 encodedAuth,
                 verbose,
                 insecure,
-                includeHeaders
-        );
+                includeHeaders,
+                pretty);
     }
 }
 
