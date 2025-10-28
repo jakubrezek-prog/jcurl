@@ -23,6 +23,7 @@ URL                  Target URL
 HTTP headers
 -i, --include            Include response headers
 -k, --insecure           Ignore SSL certificate errors
+    --pretty             Pretty-print JSON responses
 -u, --user=<basicAuth>   Basic auth username:password
 -v, --verbose            Verbose output
 -V, --version            Print version information and exit.
@@ -37,10 +38,7 @@ java -jar jcurl.jar https://jsonplaceholder.typicode.com/posts/1
 
 ### POST with JSON body
 ```bash
-java -jar jcurl.jar -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"name": "John Doe", "email": "john@example.com"}' \
-  https://jsonplaceholder.typicode.com/posts
+java -jar jcurl.jar -X POST   -H "Content-Type: application/json"  -d '{"name": "John Doe", "email": "john@example.com"}'   https://jsonplaceholder.typicode.com/posts
 ```
 
 ### Sending Data from a File
@@ -69,6 +67,12 @@ java -jar jcurl.jar -k https://self-signed.badssl.com/
 java -jar jcurl.jar -u user:passwd https://httpbin.org/basic-auth/user/passwd
 ```
 
+### Pretty print json output
+
+```bash
+java -jar jcurl.jar https://api.github.com/repos/octocat/hello-world --pretty
+```
+
 ## Build from source
 
 Requires Java 21 and Maven 3.9+.
@@ -79,41 +83,4 @@ mvn clean package
 ```
 
 ## Wrapper scripts
-To simplify usage, add a jcurl.bat (Windows) or jcurl.sh (Linux/macOS) script:
-
-```bash
-@echo off
-REM ========================================================
-REM  jcurl.bat - Windows runner for jcurl CLI
-REM ========================================================
-
-setlocal enabledelayedexpansion
-
-REM Get the directory where this script resides
-set SCRIPT_DIR=%~dp0
-
-REM Find the jar (prefer jar-with-dependencies if present)
-set JAR_FILE=
-for /f "delims=" %%f in ('dir /b /a-d "%SCRIPT_DIR%target\*jar-with-dependencies.jar" 2^>nul') do (
-    set JAR_FILE=%SCRIPT_DIR%target\%%f
-)
-
-if "%JAR_FILE%"=="" (
-    echo [ERROR] Could not find jcurl jar file in target folder.
-    echo Build it first with: mvn clean package
-    exit /b 1
-)
-
-REM Run the jar
-java -jar "%JAR_FILE%" %*
-
-endlocal
-```
-
-```bash
-#!/bin/sh
-# Simple wrapper for jcurl
-JAR="$(dirname "$0")/target/jcurl-<version>-jar-with-dependencies.jar"
-exec java -jar "$JAR" "$@"
-```
-
+To simplify usage  `jcurl.bat` (Windows) and `jcurl.sh` (Linux/macOS) scripts were added:

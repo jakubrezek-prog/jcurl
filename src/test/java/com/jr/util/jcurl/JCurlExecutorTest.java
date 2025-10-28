@@ -56,6 +56,7 @@ public class JCurlExecutorTest {
                 null,
                 false,
                 false,
+                false,
                 false
         );
 
@@ -88,7 +89,8 @@ public class JCurlExecutorTest {
                 null,
                 false,
                 false,
-                true
+                true,
+                false
         );
 
         String out = captureOutput(() -> {
@@ -118,6 +120,7 @@ public class JCurlExecutorTest {
                 Map.of(),
                 null,
                 java.util.Base64.getEncoder().encodeToString("admin:secret".getBytes()),
+                false,
                 false,
                 false,
                 false
@@ -151,7 +154,8 @@ public class JCurlExecutorTest {
                 null,
                 true,
                 false,
-                true
+                true,
+                false
         );
 
         String out = captureOutput(() -> {
@@ -178,6 +182,7 @@ public class JCurlExecutorTest {
                 null,
                 false,
                 true,
+                false,
                 false
         );
 

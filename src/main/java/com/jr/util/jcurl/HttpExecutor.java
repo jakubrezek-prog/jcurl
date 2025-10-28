@@ -1,5 +1,7 @@
 package com.jr.util.jcurl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.net.http.*;
 import java.net.URI;
 
@@ -35,6 +37,31 @@ public class HttpExecutor {
             System.out.println();
         }
 
-        System.out.println(resp.body());
+        String body = resp.body();
+
+        if (config.pretty() && isJsonResponse(resp)) {
+            body = prettyPrintJson(body);
+        }
+
+        System.out.println(body);
     }
+
+    private boolean isJsonResponse(HttpResponse<?> response) {
+        return response.headers()
+                .firstValue("Content-Type")
+                .map(v -> v.contains("application/json"))
+                .orElse(false);
+    }
+
+    private String prettyPrintJson(String json) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Object obj = mapper.readValue(json, Object.class);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } catch (Exception e) {
+            // fallback if not valid JSON
+            return json;
+        }
+    }
+
 }
