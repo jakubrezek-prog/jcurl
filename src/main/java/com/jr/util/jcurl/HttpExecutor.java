@@ -2,18 +2,13 @@ package com.jr.util.jcurl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.net.http.*;
 import java.net.URI;
 
 public class HttpExecutor {
 
-    private final JCurlConfig config;
-
-    public HttpExecutor(JCurlConfig config) {
-        this.config = config;
-    }
-
-    public void execute() throws Exception {
+    public void execute(JCurlConfig config) throws IOException,InterruptedException {
         HttpClient.Builder clientBuilder = HttpClient.newBuilder();
         if (config.insecure()) {
             clientBuilder.sslContext(InsecureSSLContext.get());

@@ -62,7 +62,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(cfg);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -95,7 +95,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(cfg);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -128,7 +128,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(cfg);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -160,7 +160,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(cfg);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -174,6 +174,7 @@ public class JCurlExecutorTest {
     @Test
     void testInsecureFlagCreatesClient() throws Exception {
         // Not truly testing SSL here, just ensuring it doesn’t crash
+        System.out.println("=================");
         JCurlConfig cfg = new JCurlConfig(
                 "https://example.com",
                 "GET",
@@ -186,7 +187,8 @@ public class JCurlExecutorTest {
                 false
         );
 
-        assertDoesNotThrow(() -> new HttpExecutor(cfg));
+        assertDoesNotThrow(() -> new HttpExecutor().execute(cfg));
+        System.out.println("#######################");
     }
 
 }
