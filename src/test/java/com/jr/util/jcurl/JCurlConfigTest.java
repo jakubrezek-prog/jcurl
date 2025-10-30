@@ -15,16 +15,17 @@ public class JCurlConfigTest {
         String fileContent = "hello world";
         Files.writeString(tempFile, fileContent);
 
+        HttpExecutor client = new HttpExecutor();
+
         // 2. Create JCurl instance and simulate setting -d @file
-        JCurl jcurl = new JCurl(null);
-        JCurlOptions options = new JCurlOptions(jcurl);
+        JCurl jcurl = new JCurl(client);
+        JCurlOptions options = JCurlOptions.builder().app(jcurl).build();
         options.setData("@" + tempFile.toString()); // assume 'data' is the field holding -d
 
-        // 3. Build config
-        JCurlConfig config = jcurl.buildConfig(options);
+
 
         // 4. Assert the body equals the file content
-        assertEquals(fileContent, config.body());
+        assertEquals(fileContent, client.getBody(options));
 
         // Clean up temp file
         Files.deleteIfExists(tempFile);

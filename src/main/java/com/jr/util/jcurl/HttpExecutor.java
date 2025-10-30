@@ -31,7 +31,7 @@ public class HttpExecutor {
                                 HttpRequest.BodyPublishers.noBody() :
                                 HttpRequest.BodyPublishers.ofString(payload));
 
-        Map<String,String> headers = getHeaders(config);
+        Map<String, String> headers = getHeaders(config);
         headers.forEach(req::header);
         if (config.getBasicAuth() != null) {
             req.header("Authorization", "Basic " + getAuth(config));
@@ -61,7 +61,7 @@ public class HttpExecutor {
                 .orElse(false);
     }
 
-    private String getBody(JCurlOptions options) throws IOException {
+    String getBody(JCurlOptions options) throws IOException {
         String body = options.getData();
         if (body != null && body.startsWith("@")) {
             Path path = Paths.get(body.substring(1));
