@@ -17,7 +17,7 @@ public class JCurlConfigTest {
 
         // 2. Create JCurl instance and simulate setting -d @file
         JCurl jcurl = new JCurl(null);
-        JCurlOptions options = new JCurlOptions();
+        JCurlOptions options = new JCurlOptions(jcurl);
         options.setData("@" + tempFile.toString()); // assume 'data' is the field holding -d
 
         // 3. Build config

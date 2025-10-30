@@ -41,6 +41,8 @@ grep -E '^\s*java -jar jcurl\.jar' "$README" | while read -r cmd; do
   echo
 done
 
+rm user.json
+
 if $DRY_RUN; then
   echo "Dry run complete. No commands were executed."
 else

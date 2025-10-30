@@ -21,16 +21,13 @@ public class JCurl {
         this.executor = executor;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         //By default, picocli will treat any argument beginning with @ as a “parameter file”
         JCurl app = new JCurl(new HttpExecutor());
-        JCurlOptions options = new JCurlOptions();
-        new CommandLine(options)
+        int exitCode = new CommandLine(new JCurlOptions(app))
                 .setExpandAtFiles(false)
-                .parseArgs(args);
-
-        int exit = app.run(options);
-        System.exit(exit);
+                .execute(args);
+        System.exit(exitCode);
     }
 
     public int run(JCurlOptions options) throws IOException, InterruptedException {
