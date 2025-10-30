@@ -62,7 +62,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor().execute(cfg);
+                new HttpExecutor().execute(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -95,7 +95,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor().execute(cfg);
+                new HttpExecutor().execute(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -128,7 +128,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor().execute(cfg);
+                new HttpExecutor().execute(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -160,7 +160,7 @@ public class JCurlExecutorTest {
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor().execute(cfg);
+                new HttpExecutor().execute(null);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -187,7 +187,7 @@ public class JCurlExecutorTest {
                 false
         );
 
-        assertDoesNotThrow(() -> new HttpExecutor().execute(cfg));
+        assertDoesNotThrow(() -> new HttpExecutor().execute(null));
         System.out.println("#######################");
     }
 
