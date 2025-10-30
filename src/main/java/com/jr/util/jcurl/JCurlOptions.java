@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
         mixinStandardHelpOptions = true,
         version = "jcurl 0.5.0",
         description = "Lightweight curl-like CLI for REST API debugging in Java.")
-public class JCurlOptions implements Callable<Integer> {
+public class JCurlOptions  {
     @Option(names = {"-X", "--request"}, description = "HTTP method", defaultValue = "GET")
     private String method;
 
@@ -44,22 +44,6 @@ public class JCurlOptions implements Callable<Integer> {
 
     @Option(names = "--pretty", description = "Pretty-print JSON responses")
     boolean pretty;
-
-    private final JCurl app;
-
-    public JCurlOptions(JCurl app) {
-        this.app = app;
-    }
-
-    @Override
-    public Integer call() {
-        try {
-            return app.run(this);
-        } catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();
-            return -1;
-        }
-    }
 
     public String getMethod() {
         return method;

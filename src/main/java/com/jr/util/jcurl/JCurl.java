@@ -21,13 +21,16 @@ public class JCurl {
         this.executor = executor;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //By default, picocli will treat any argument beginning with @ as a “parameter file”
         JCurl app = new JCurl(new HttpExecutor());
-        int exitCode = new CommandLine(new JCurlOptions(app))
+        JCurlOptions options = new JCurlOptions();
+        new CommandLine(options)
                 .setExpandAtFiles(false)
-                .execute(args);
-        System.exit(exitCode);
+                .parseArgs(args);
+
+        int exit = app.run(options);
+        System.exit(exit);
     }
 
     public int run(JCurlOptions options) throws IOException, InterruptedException {
@@ -36,7 +39,6 @@ public class JCurl {
 
         return 0;
     }
-
 
     JCurlConfig buildConfig(JCurlOptions options) throws IOException {
         Map<String, String> headers = new LinkedHashMap<>();
