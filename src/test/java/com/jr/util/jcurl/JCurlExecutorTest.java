@@ -42,27 +42,21 @@ public class JCurlExecutorTest {
         return out.toString();
     }
 
+
     @Test
     void testSimpleGet() throws Exception {
         stubFor(get("/ping").willReturn(aResponse()
                 .withStatus(200)
                 .withBody("pong")));
 
-        JCurlConfig cfg = new JCurlConfig(
-                "http://localhost:8089/ping",
-                "GET",
-                Map.of(),
-                null,
-                null,
-                false,
-                false,
-                false,
-                false
-        );
+        JCurlOptions options = JCurlOptions.builder().
+                url("http://localhost:8089/ping").
+                method("GET").
+                build();
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(options);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -81,21 +75,18 @@ public class JCurlExecutorTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"result\":\"ok\"}")));
 
-        JCurlConfig cfg = new JCurlConfig(
-                "http://localhost:8089/echo",
-                "POST",
-                Map.of("Content-Type", "application/json"),
-                "{\"name\":\"John Doe\"}",
-                null,
-                false,
-                false,
-                true,
-                false
-        );
+        String[] headers = {"Content-Type", "application/json"};
+
+        JCurlOptions options = JCurlOptions.builder().
+                url("http://localhost:8089/echo").
+                method("POST").
+                data("{\"name\":\"John Doe\"}").
+                headerPairs(headers).
+                build();
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(options);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -114,21 +105,15 @@ public class JCurlExecutorTest {
                         .withStatus(200)
                         .withBody("Access granted")));
 
-        JCurlConfig cfg = new JCurlConfig(
-                "http://localhost:8089/secure",
-                "GET",
-                Map.of(),
-                null,
-                java.util.Base64.getEncoder().encodeToString("admin:secret".getBytes()),
-                false,
-                false,
-                false,
-                false
-        );
+        JCurlOptions options = JCurlOptions.builder().
+                url("http://localhost:8089/secure").
+                method("GET").
+                basicAuth("admin:secret").
+                build();
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(options);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -139,6 +124,7 @@ public class JCurlExecutorTest {
                 .withHeader("Authorization", matching("Basic .*")));
     }
 
+
     @Test
     void testVerboseOutputIncludesHeaders() throws Exception {
         stubFor(get("/headers").willReturn(aResponse()
@@ -146,21 +132,18 @@ public class JCurlExecutorTest {
                 .withHeader("X-Test", "HeaderValue")
                 .withBody("bodytext")));
 
-        JCurlConfig cfg = new JCurlConfig(
-                "http://localhost:8089/headers",
-                "GET",
-                Map.of(),
-                null,
-                null,
-                true,
-                false,
-                true,
-                false
-        );
+
+
+        JCurlOptions options = JCurlOptions.builder().
+                url("http://localhost:8089/headers").
+                method("GET").
+                verbose(true).
+                includeHeaders(true).
+                build();
 
         String out = captureOutput(() -> {
             try {
-                new HttpExecutor(cfg).execute();
+                new HttpExecutor().execute(options);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -171,22 +154,20 @@ public class JCurlExecutorTest {
         assertTrue(out.contains("bodytext"));
     }
 
+
     @Test
     void testInsecureFlagCreatesClient() throws Exception {
         // Not truly testing SSL here, just ensuring it doesn’t crash
-        JCurlConfig cfg = new JCurlConfig(
-                "https://example.com",
-                "GET",
-                Map.of(),
-                null,
-                null,
-                false,
-                true,
-                false,
-                false
-        );
+        System.out.println("=================");
 
-        assertDoesNotThrow(() -> new HttpExecutor(cfg));
+        JCurlOptions options = JCurlOptions.builder().
+                url("https://example.com").
+                method("GET").
+                insecure(true).
+                build();
+
+        assertDoesNotThrow(() -> new HttpExecutor().execute(options));
+        System.out.println("#######################");
     }
 
 }

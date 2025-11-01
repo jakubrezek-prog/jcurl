@@ -1,102 +1,30 @@
 package com.jr.util.jcurl;
 
 import picocli.CommandLine;
-import picocli.CommandLine.*;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.concurrent.Callable;
-import java.util.*;
-import java.util.Base64;
 
-@Command(name = "jcurl",
-        mixinStandardHelpOptions = true,
-        version = "jcurl 0.5.0",
-        description = "Lightweight curl-like CLI for REST API debugging in Java.")
-public class JCurl implements Callable<Integer> {
+public class JCurl {
 
-    @Option(names = {"-X", "--request"}, description = "HTTP method", defaultValue = "GET")
-    private String method;
+    private final HttpExecutor executor;
 
-    @Option(names = {"-d", "--data"},
-            description = "HTTP request body data, or @file to read from file"
-    )
-    private String data;
-
-    public void setData(String data) {
-        this.data = data;
+    public JCurl(HttpExecutor executor) {
+        this.executor = executor;
     }
 
-    @Option(names = {"-H", "--header"}, description = "HTTP headers", split = ",")
-    private String[] headerPairs;
-
-    @Option(names = {"-u", "--user"}, description = "Basic auth username:password")
-    private String basicAuth;
-
-    @Option(names = {"-v", "--verbose"}, description = "Verbose output")
-    private boolean verbose;
-
-    @Option(names = {"-i", "--include"}, description = "Include response headers")
-    private boolean includeHeaders;
-
-    @Option(names = {"-k", "--insecure"}, description = "Ignore SSL certificate errors")
-    private boolean insecure;
-
-    @Parameters(index = "0", paramLabel = "URL", description = "Target URL")
-    private String url;
-
-    @Option(names = "--pretty", description = "Pretty-print JSON responses")
-    boolean pretty;
-
     public static void main(String[] args) {
-       //By default, picocli will treat any argument beginning with @ as a “parameter file”
-        int exitCode = new CommandLine(new JCurl())
+        //By default, picocli will treat any argument beginning with @ as a “parameter file”
+        JCurl app = new JCurl(new HttpExecutor());
+        JCurlOptions options = JCurlOptions.builder().app(app).build();
+        int exitCode = new CommandLine(options)
                 .setExpandAtFiles(false)
                 .execute(args);
         System.exit(exitCode);
     }
 
-    @Override
-    public Integer call() throws Exception {
-        JCurlConfig config = buildConfig();
-        HttpExecutor executor = new HttpExecutor(config);
-        executor.execute();
+    public int run(JCurlOptions options) throws IOException, InterruptedException {
+        executor.execute(options);
         return 0;
-    }
-
-    JCurlConfig buildConfig() throws IOException {
-        Map<String, String> headers = new LinkedHashMap<>();
-        if (headerPairs != null) {
-            for (String h : headerPairs) {
-                String[] kv = h.split(":", 2);
-                if (kv.length == 2) headers.put(kv[0].trim(), kv[1].trim());
-            }
-        }
-
-        String encodedAuth = null;
-        if (basicAuth != null) {
-            encodedAuth = Base64.getEncoder().encodeToString(basicAuth.getBytes());
-        }
-
-        String body = data;
-        if (body != null && body.startsWith("@")) {
-            Path path = Paths.get(body.substring(1));
-            body = Files.readString(path, StandardCharsets.UTF_8);
-        }
-
-        return new JCurlConfig(
-                url,
-                method,
-                headers,
-                body,
-                encodedAuth,
-                verbose,
-                insecure,
-                includeHeaders,
-                pretty);
     }
 }
 

@@ -34,5 +34,4 @@ REM Run the jar
 REM echo Using Java: %JAVA_CMD%
 "%JAVA_CMD%" -jar "%JAR_FILE%" %*
 
-
 endlocal

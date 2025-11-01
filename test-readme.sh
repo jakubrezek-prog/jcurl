@@ -4,6 +4,7 @@ set -euo pipefail
 README="README.md"
 TARGET_DIR="target"
 JAR=$(find "$TARGET_DIR" -maxdepth 1 -type f -name "jcurl-*-jar-with-dependencies.jar" | sort | tail -n 1)
+REAL_JAR=$(realpath "$JAR")
 DRY_RUN=false
 
 if [[ -n "$JAVA_HOME" ]]; then
@@ -23,18 +24,28 @@ if [[ ! -f "$JAR" ]]; then
   exit 1
 fi
 
-echo "== Running README examples =="
+WORKDIR="$(mktemp -d)"
+trap 'rm -rf "$WORKDIR"' EXIT
+
+echo "== Running README examples in $WORKDIR =="
 $DRY_RUN && echo "(dry-run mode — commands will not be executed)"
 echo
 
-# Find all commands starting with "java -jar jcurl.jar"
-grep -E '^\s*java -jar jcurl\.jar' "$README" | while read -r cmd; do
-  [[ -z "$cmd" ]] && continue
+# Extract lines that are either setup or jcurl commands
+grep -E '^\s*(echo |cat |touch |rm |java -jar jcurl\.jar)' "$README" | while read -r line; do
+  [[ -z "$line" ]] && continue
+  cd "$WORKDIR"
 
-  # Replace the jar name with the actual path
-  cmd="${cmd/java -jar jcurl.jar/$JAVA_EXE -jar $JAR}"
+  if [[ "$line" =~ java\ -jar\ jcurl\.jar ]]; then
+    # Replace jar name with actual build path
+    cmd="${line/java -jar jcurl.jar/$JAVA_EXE -jar $REAL_JAR}"
+    echo "→ $cmd"
+  else
+    # setup line (e.g., echo, touch, etc.)
+    cmd="$line"
+    echo " setup: $cmd"
+  fi
 
-  echo "→ $cmd"
   if ! $DRY_RUN; then
     bash -c "$cmd"
   fi

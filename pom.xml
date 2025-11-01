@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jr.util</groupId>
     <artifactId>jcurl</artifactId>
-    <version>0.5.0</version>
+    <version>0.8.0</version>
     <name>jcurl</name>
     <description>Lightweight Java-based curl alternative for REST debugging.</description>
 
@@ -11,6 +11,12 @@
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>4.7.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
         </dependency>
 
         <dependency>
@@ -43,7 +49,6 @@
             <scope>test</scope>
         </dependency>
 
-
     </dependencies>
 
     <properties>
@@ -53,13 +58,26 @@
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
     </properties>
 
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
+            </plugin>
+
+            <!-- version -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
 
             <!-- JUnit 5 provider -->
@@ -82,6 +100,12 @@
                         <manifest>
                             <mainClass>com.jr.util.jcurl.JCurl</mainClass>
                         </manifest>
+
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
