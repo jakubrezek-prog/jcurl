@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
 
 @Command(name = "jcurl",
         mixinStandardHelpOptions = true,
-        version = "jcurl 0.7.0",
+        versionProvider = JCurlVersionProvider.class,
         description = "Lightweight curl-like CLI for REST API debugging in Java.")
 @Getter
 @Setter
