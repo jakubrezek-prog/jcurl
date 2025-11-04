@@ -204,4 +204,32 @@ public class JCurlExecutorTest {
         assertThrows(Exception.class, () -> new HttpExecutor().execute(secureOptions));
     }
 
+    @Test
+    void testPrettyPrintJsonValidJson() {
+        HttpExecutor executor = new HttpExecutor();
+        String compactJson = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}";
+
+        String result = executor.prettyPrintJson(compactJson);
+
+        // Verify it's pretty printed (contains newlines and indentation)
+        assertTrue(result.contains("\n"));
+        assertTrue(result.contains("  \"name\""));
+        assertTrue(result.contains("  \"age\""));
+        assertTrue(result.contains("  \"city\""));
+        assertTrue(result.contains("\"John\""));
+        assertTrue(result.contains("30"));
+        assertTrue(result.contains("\"New York\""));
+    }
+
+    @Test
+    void testPrettyPrintJsonInvalidJson() {
+        HttpExecutor executor = new HttpExecutor();
+        String invalidJson = "not json at all";
+
+        String result = executor.prettyPrintJson(invalidJson);
+
+        // Should return original string when JSON parsing fails
+        assertEquals(invalidJson, result);
+    }
+
 }

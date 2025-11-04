@@ -89,7 +89,7 @@ public class HttpExecutor {
         return headers;
     }
 
-    private String prettyPrintJson(String json) {
+    String prettyPrintJson(String json) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Object obj = mapper.readValue(json, Object.class);
