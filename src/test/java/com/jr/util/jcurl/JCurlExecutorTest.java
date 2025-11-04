@@ -1,6 +1,7 @@
 package com.jr.util.jcurl;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -15,7 +16,12 @@ public class JCurlExecutorTest {
 
     @BeforeAll
     static void setupServer() {
-        wireMockServer = new WireMockServer(8089); // pick a port
+        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig()
+                .port(8089)
+                .httpsPort(8443)
+                .keystorePath("src/test/resources/keystore.jks")
+                .keystorePassword("password")
+                .keyManagerPassword("password"));
         wireMockServer.start();
         configureFor("localhost", 8089);
     }
@@ -157,17 +163,45 @@ public class JCurlExecutorTest {
 
     @Test
     void testInsecureFlagCreatesClient() throws Exception {
-        // Not truly testing SSL here, just ensuring it doesn’t crash
-        System.out.println("=================");
+        // Test insecure HTTPS connection with self-signed certificate
+        stubFor(get("/secure-ping").willReturn(aResponse()
+                .withStatus(200)
+                .withBody("secure-pong")));
 
-        JCurlOptions options = JCurlOptions.builder().
-                url("https://example.com").
+        // Test with insecure=true - should succeed
+        JCurlOptions insecureOptions = JCurlOptions.builder().
+                url("https://localhost:8443/secure-ping").
                 method("GET").
                 insecure(true).
                 build();
 
-        assertDoesNotThrow(() -> new HttpExecutor().execute(options));
-        System.out.println("#######################");
+        String out = captureOutput(() -> {
+            try {
+                new HttpExecutor().execute(insecureOptions);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        assertTrue(out.contains("secure-pong"));
+        verify(getRequestedFor(urlEqualTo("/secure-ping")));
+    }
+
+    @Test
+    void testInsecureFlagFalseThrowsSSLException() throws Exception {
+        // Test insecure HTTPS connection with self-signed certificate
+        stubFor(get("/secure-ping").willReturn(aResponse()
+                .withStatus(200)
+                .withBody("secure-pong")));
+
+        // Test with insecure=false - should throw SSL exception
+        JCurlOptions secureOptions = JCurlOptions.builder().
+                url("https://localhost:8443/secure-ping").
+                method("GET").
+                insecure(false).
+                build();
+
+        assertThrows(Exception.class, () -> new HttpExecutor().execute(secureOptions));
     }
 
 }
