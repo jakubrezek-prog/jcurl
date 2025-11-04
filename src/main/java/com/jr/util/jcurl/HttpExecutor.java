@@ -17,14 +17,7 @@ import java.util.Map;
 
 public class HttpExecutor {
 
-    private final ResponsePrinter printer;
-
     public HttpExecutor() {
-        this(new ResponsePrinter());
-    }
-
-    public HttpExecutor(ResponsePrinter printer) {
-        this.printer = printer;
     }
 
     public HttpResponse<String> execute(JCurlOptions config) throws IOException, InterruptedException {
@@ -48,8 +41,6 @@ public class HttpExecutor {
         }
 
         HttpResponse<String> resp = client.send(req.build(), HttpResponse.BodyHandlers.ofString());
-
-        printer.printResponse(config, resp);
 
         return resp;
     }
