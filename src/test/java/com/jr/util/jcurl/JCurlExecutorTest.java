@@ -8,7 +8,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
-import java.io.*;
+import java.net.http.HttpResponse;
 
 public class JCurlExecutorTest {
 
@@ -36,17 +36,6 @@ public class JCurlExecutorTest {
         wireMockServer.resetAll();
     }
 
-    private String captureOutput(Runnable action) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintStream original = System.out;
-        System.setOut(new PrintStream(out));
-        try {
-            action.run();
-        } finally {
-            System.setOut(original);
-        }
-        return out.toString();
-    }
 
 
     @Test
@@ -60,15 +49,10 @@ public class JCurlExecutorTest {
                 method("GET").
                 build();
 
-        String out = captureOutput(() -> {
-            try {
-                new HttpExecutor().execute(options);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        HttpResponse<String> response = new HttpExecutor().execute(options);
 
-        assertTrue(out.contains("pong"));
+        assertEquals(200, response.statusCode());
+        assertEquals("pong", response.body());
         verify(getRequestedFor(urlEqualTo("/ping")));
     }
 
@@ -90,15 +74,10 @@ public class JCurlExecutorTest {
                 headerPairs(headers).
                 build();
 
-        String out = captureOutput(() -> {
-            try {
-                new HttpExecutor().execute(options);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        HttpResponse<String> response = new HttpExecutor().execute(options);
 
-        assertTrue(out.contains("ok"));
+        assertEquals(201, response.statusCode());
+        assertTrue(response.body().contains("ok"));
         verify(postRequestedFor(urlEqualTo("/echo"))
                 .withRequestBody(equalToJson("{\"name\":\"John Doe\"}")));
     }
@@ -117,15 +96,10 @@ public class JCurlExecutorTest {
                 basicAuth("admin:secret").
                 build();
 
-        String out = captureOutput(() -> {
-            try {
-                new HttpExecutor().execute(options);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        HttpResponse<String> response = new HttpExecutor().execute(options);
 
-        assertTrue(out.contains("Access granted"));
+        assertEquals(200, response.statusCode());
+        assertEquals("Access granted", response.body());
         verify(getRequestedFor(urlEqualTo("/secure"))
                 .withHeader("Authorization", matching("Basic .*")));
     }
@@ -138,8 +112,6 @@ public class JCurlExecutorTest {
                 .withHeader("X-Test", "HeaderValue")
                 .withBody("bodytext")));
 
-
-
         JCurlOptions options = JCurlOptions.builder().
                 url("http://localhost:8089/headers").
                 method("GET").
@@ -147,17 +119,12 @@ public class JCurlExecutorTest {
                 includeHeaders(true).
                 build();
 
-        String out = captureOutput(() -> {
-            try {
-                new HttpExecutor().execute(options);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        HttpResponse<String> response = new HttpExecutor().execute(options);
 
-        assertTrue(out.contains("HTTP/"));
-        assertTrue(out.toLowerCase().contains("x-test"));
-        assertTrue(out.contains("bodytext"));
+        assertEquals(200, response.statusCode());
+        assertEquals("bodytext", response.body());
+        assertTrue(response.headers().firstValue("x-test").isPresent());
+        assertEquals("HeaderValue", response.headers().firstValue("x-test").get());
     }
 
 
@@ -175,15 +142,10 @@ public class JCurlExecutorTest {
                 insecure(true).
                 build();
 
-        String out = captureOutput(() -> {
-            try {
-                new HttpExecutor().execute(insecureOptions);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        HttpResponse<String> response = new HttpExecutor().execute(insecureOptions);
 
-        assertTrue(out.contains("secure-pong"));
+        assertEquals(200, response.statusCode());
+        assertEquals("secure-pong", response.body());
         verify(getRequestedFor(urlEqualTo("/secure-ping")));
     }
 
@@ -204,32 +166,5 @@ public class JCurlExecutorTest {
         assertThrows(Exception.class, () -> new HttpExecutor().execute(secureOptions));
     }
 
-    @Test
-    void testPrettyPrintJsonValidJson() {
-        HttpExecutor executor = new HttpExecutor();
-        String compactJson = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}";
-
-        String result = executor.prettyPrintJson(compactJson);
-
-        // Verify it's pretty printed (contains newlines and indentation)
-        assertTrue(result.contains("\n"));
-        assertTrue(result.contains("  \"name\""));
-        assertTrue(result.contains("  \"age\""));
-        assertTrue(result.contains("  \"city\""));
-        assertTrue(result.contains("\"John\""));
-        assertTrue(result.contains("30"));
-        assertTrue(result.contains("\"New York\""));
-    }
-
-    @Test
-    void testPrettyPrintJsonInvalidJson() {
-        HttpExecutor executor = new HttpExecutor();
-        String invalidJson = "not json at all";
-
-        String result = executor.prettyPrintJson(invalidJson);
-
-        // Should return original string when JSON parsing fails
-        assertEquals(invalidJson, result);
-    }
 
 }
