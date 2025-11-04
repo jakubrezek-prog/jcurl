@@ -17,7 +17,10 @@ import java.util.Map;
 
 public class HttpExecutor {
 
-    public void execute(JCurlOptions config) throws IOException, InterruptedException {
+    public HttpExecutor() {
+    }
+
+    public HttpResponse<String> execute(JCurlOptions config) throws IOException, InterruptedException {
         HttpClient.Builder clientBuilder = HttpClient.newBuilder();
         if (config.isInsecure()) {
             clientBuilder.sslContext(InsecureSSLContext.get());
@@ -39,27 +42,9 @@ public class HttpExecutor {
 
         HttpResponse<String> resp = client.send(req.build(), HttpResponse.BodyHandlers.ofString());
 
-        if (config.isIncludeHeaders() || config.isVerbose()) {
-            System.out.println("HTTP/" + resp.version() + " " + resp.statusCode());
-            resp.headers().map().forEach((k, v) -> System.out.println(k + ": " + String.join(",", v)));
-            System.out.println();
-        }
-
-        String body = resp.body();
-
-        if (config.isPretty() && isJsonResponse(resp)) {
-            body = prettyPrintJson(body);
-        }
-
-        System.out.println(body);
+        return resp;
     }
 
-    private boolean isJsonResponse(HttpResponse<?> response) {
-        return response.headers()
-                .firstValue("Content-Type")
-                .map(v -> v.contains("application/json"))
-                .orElse(false);
-    }
 
     String getBody(JCurlOptions options) throws IOException {
         String body = options.getData();
@@ -89,14 +74,4 @@ public class HttpExecutor {
         return headers;
     }
 
-    String prettyPrintJson(String json) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Object obj = mapper.readValue(json, Object.class);
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        } catch (Exception e) {
-            // fallback if not valid JSON
-            return json;
-        }
-    }
 }
