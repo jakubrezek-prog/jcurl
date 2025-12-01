@@ -46,9 +46,9 @@ public class JCurlOptions implements Callable<Integer> {
     private String url;
 
     @Option(names = "--pretty", description = "Pretty-print JSON responses")
-    boolean pretty;
+    private boolean pretty;
 
-    private  JCurl app;
+    private JCurl app;
 
     @Override
     public Integer call() {
