@@ -13,7 +13,7 @@ java -jar jcurl.jar -X GET "https://httpbin.org/get" -H "Accept: application/jso
 ```bash
 java -jar jcurl.jar  -h
 
-Usage: jcurl [-hikvV] [-d=<data>] [-u=<basicAuth>] [-X=<method>]
+Usage: jcurl [-hsikvV] [-d=<data>] [-u=<basicAuth>] [-X=<method>]
 [-H=<headerPairs>[,<headerPairs>...]]... URL
 Lightweight curl-like CLI for REST API debugging in Java.
 URL                  Target URL
@@ -23,6 +23,7 @@ URL                  Target URL
 HTTP headers
 -i, --include            Include response headers
 -k, --insecure           Ignore SSL certificate errors
+-s, --silent             Silent mode (default)
     --pretty             Pretty-print JSON responses
 -u, --user=<basicAuth>   Basic auth username:password
 -v, --verbose            Verbose output

@@ -23,11 +23,19 @@ public class JCurlConfigTest {
         options.setData("@" + tempFile.toString()); // assume 'data' is the field holding -d
 
 
-
         // 4. Assert the body equals the file content
         assertEquals(fileContent, client.getBody(options));
 
         // Clean up temp file
         Files.deleteIfExists(tempFile);
+    }
+
+    @Test
+    void testSilentOption() {
+        HttpExecutor client = new HttpExecutor();
+        JCurl jcurl = new JCurl(client);
+        JCurlOptions options = JCurlOptions.builder().app(jcurl).silent(true).build();
+
+        assertEquals(true, options.isSilent());
     }
 }

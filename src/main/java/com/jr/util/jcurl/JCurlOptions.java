@@ -42,6 +42,9 @@ public class JCurlOptions implements Callable<Integer> {
     @Option(names = {"-k", "--insecure"}, description = "Ignore SSL certificate errors")
     private boolean insecure;
 
+    @Option(names = {"-s", "--silent"}, description = "Silent mode (default)")
+    private boolean silent;
+
     @Parameters(index = "0", paramLabel = "URL", description = "Target URL")
     private String url;
 
