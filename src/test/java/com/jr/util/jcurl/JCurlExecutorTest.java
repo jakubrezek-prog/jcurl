@@ -166,5 +166,104 @@ public class JCurlExecutorTest {
         assertThrows(Exception.class, () -> new HttpExecutor().execute(secureOptions));
     }
 
+    @Test
+    void testGetHeadersValidHeaders() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder()
+                .headerPairs(new String[]{"Content-Type: application/json", "Authorization: Bearer token123"})
+                .build();
+
+        Map<String, String> headers = executor.getHeaders(options);
+
+        assertEquals(2, headers.size());
+        assertEquals("application/json", headers.get("Content-Type"));
+        assertEquals("Bearer token123", headers.get("Authorization"));
+    }
+
+    @Test
+    void testGetHeadersWithColonsInValue() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder()
+                .headerPairs(new String[]{"Location: https://example.com:8080/path"})
+                .build();
+
+        Map<String, String> headers = executor.getHeaders(options);
+
+        assertEquals(1, headers.size());
+        assertEquals("https://example.com:8080/path", headers.get("Location"));
+    }
+
+    @Test
+    void testGetHeadersNullHeaderPairs() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder().build();
+
+        Map<String, String> headers = executor.getHeaders(options);
+
+        assertTrue(headers.isEmpty());
+    }
+
+    @Test
+    void testGetHeadersEmptyArray() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder()
+                .headerPairs(new String[]{})
+                .build();
+
+        Map<String, String> headers = executor.getHeaders(options);
+
+        assertTrue(headers.isEmpty());
+    }
+
+    @Test
+    void testGetHeadersSkipsEmptyStrings() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder()
+                .headerPairs(new String[]{"", "  ", "Content-Type: application/json"})
+                .build();
+
+        Map<String, String> headers = executor.getHeaders(options);
+
+        assertEquals(1, headers.size());
+        assertEquals("application/json", headers.get("Content-Type"));
+    }
+
+    @Test
+    void testGetHeadersInvalidFormatNoColon() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder()
+                .headerPairs(new String[]{"Content-Type"})
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> executor.getHeaders(options));
+        assertTrue(exception.getMessage().contains("Invalid header format"));
+        assertTrue(exception.getMessage().contains("Content-Type"));
+    }
+
+    @Test
+    void testGetHeadersInvalidFormatEmptyKey() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder()
+                .headerPairs(new String[]{":application/json"})
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> executor.getHeaders(options));
+        assertTrue(exception.getMessage().contains("Invalid header format"));
+        assertTrue(exception.getMessage().contains(":application/json"));
+    }
+
+    @Test
+    void testGetHeadersInvalidFormatOnlyColon() {
+        HttpExecutor executor = new HttpExecutor();
+        JCurlOptions options = JCurlOptions.builder()
+                .headerPairs(new String[]{":"})
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> executor.getHeaders(options));
+        assertTrue(exception.getMessage().contains("Invalid header format"));
+    }
 
 }

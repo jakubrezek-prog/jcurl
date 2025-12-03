@@ -61,12 +61,18 @@ public class HttpExecutor {
         return encodedAuth;
     }
 
-    private Map<String, String> getHeaders(JCurlOptions options) {
+    Map<String, String> getHeaders(JCurlOptions options) {
         Map<String, String> headers = new LinkedHashMap<>();
         if (options.getHeaderPairs() != null) {
             for (String h : options.getHeaderPairs()) {
+                if (h == null || h.trim().isEmpty()) {
+                    continue; // Skip empty or null headers
+                }
                 String[] kv = h.split(":", 2);
-                if (kv.length == 2) headers.put(kv[0].trim(), kv[1].trim());
+                if (kv.length != 2 || kv[0].trim().isEmpty()) {
+                    throw new IllegalArgumentException("Invalid header format: '" + h + "'. Expected 'key:value'");
+                }
+                headers.put(kv[0].trim(), kv[1].trim());
             }
         }
         return headers;
