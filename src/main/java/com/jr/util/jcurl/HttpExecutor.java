@@ -56,7 +56,7 @@ public class HttpExecutor {
     private String getAuth(JCurlOptions options) {
         String encodedAuth = null;
         if (options.getBasicAuth() != null) {
-            encodedAuth = Base64.getEncoder().encodeToString(options.getBasicAuth().getBytes());
+            encodedAuth = Base64.getEncoder().encodeToString(options.getBasicAuth().getBytes(StandardCharsets.UTF_8));
         }
         return encodedAuth;
     }

@@ -65,7 +65,7 @@ public class JCurlExecutorTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"result\":\"ok\"}")));
 
-        String[] headers = {"Content-Type", "application/json"};
+        String[] headers = {"Content-Type: application/json"};
 
         JCurlOptions options = JCurlOptions.builder().
                 url("http://localhost:8089/echo").

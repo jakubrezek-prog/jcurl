@@ -5,6 +5,8 @@ import java.net.http.HttpResponse;
 
 public class ResponsePrinter {
 
+    private static final String APPLICATION_JSON = "application/json";
+
     private final PrintStream out;
 
     public ResponsePrinter(PrintStream out) {
@@ -44,7 +46,7 @@ public class ResponsePrinter {
     private boolean isJsonResponse(HttpResponse<?> response) {
         return response.headers()
                 .firstValue("Content-Type")
-                .map(v -> v.contains("application/json"))
+                .map(v -> v.contains(APPLICATION_JSON))
                 .orElse(false);
     }
 
