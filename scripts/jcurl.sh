@@ -4,9 +4,9 @@
 # jcurl.sh
 # -------------------------------
 
-# Find the JAR in target directory
-TARGET_DIR="target"
-JCURL_JAR=$(find "$TARGET_DIR" -maxdepth 1 -type f -name "jcurl-*-jar-with-dependencies.jar" | sort | tail -n 1)
+# Find the JAR in the same directory as this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+JCURL_JAR="$SCRIPT_DIR/jcurl.jar"
 
 if [[ -n "$JCURL_JAVA" ]]; then
   JAVA_EXE="$JCURL_JAVA"
@@ -17,8 +17,8 @@ else
 fi
 
 # Check if JAR exists
-if [ -z "$JCURL_JAR" ]; then
-    echo "Error: jcurl JAR not found in $TARGET_DIR. Have you built the project with Maven?"
+if [ ! -f "$JCURL_JAR" ]; then
+    echo "Error: jcurl.jar not found in $SCRIPT_DIR."
     exit 1
 fi
 

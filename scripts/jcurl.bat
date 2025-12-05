@@ -8,15 +8,11 @@ setlocal enabledelayedexpansion
 REM Get the directory where this script resides
 set SCRIPT_DIR=%~dp0
 
-REM Find the jar (prefer jar-with-dependencies if present)
-set JAR_FILE=
-for /f "delims=" %%f in ('dir /b /a-d "%SCRIPT_DIR%target\*jar-with-dependencies.jar" 2^>nul') do (
-    set JAR_FILE=%SCRIPT_DIR%target\%%f
-)
+REM Find the jar in the same directory
+set JAR_FILE=%SCRIPT_DIR%jcurl.jar
 
-if "%JAR_FILE%"=="" (
-    echo [ERROR] Could not find jcurl jar file in target folder.
-    echo Build it first with: mvn clean package
+if not exist "%JAR_FILE%" (
+    echo [ERROR] Could not find jcurl.jar in %SCRIPT_DIR%.
     exit /b 1
 )
 
