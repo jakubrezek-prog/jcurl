@@ -84,4 +84,4 @@ mvn clean package
 ```
 
 ## Wrapper scripts
-To simplify usage  [jcurl.bat](jcurl.bat) (Windows) and [jcurl.sh](jcurl.sh) (Linux/macOS) scripts were added
+To simplify usage  [jcurl.bat](scripts/jcurl.bat) (Windows) and [jcurl.sh](scripts/jcurl.sh) (Linux/macOS) scripts were added
