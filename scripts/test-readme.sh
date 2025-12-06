@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# test-readme.sh - Script to validate README.md examples
+#
+# This script extracts and executes jcurl commands from README.md in a temporary
+# directory to ensure examples work correctly. Supports --dry-run for testing
+# without execution. Requires Maven build to have generated the JAR first.
+
 set -euo pipefail
 
 # Change to project root directory

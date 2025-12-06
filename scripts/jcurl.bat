@@ -1,7 +1,9 @@
 @echo off
-REM ========================================================
-REM  jcurl.bat - Windows runner for jcurl CLI
-REM ========================================================
+REM jcurl.bat - Windows wrapper script to run jcurl CLI tool
+REM
+REM This script locates jcurl.jar in the same directory and executes it with
+REM provided arguments. Simplifies usage by handling Java path detection and
+REM JAR location automatically.
 
 setlocal enabledelayedexpansion
 

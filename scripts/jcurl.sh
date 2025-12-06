@@ -1,8 +1,9 @@
 #!/bin/bash
-
-# -------------------------------
-# jcurl.sh
-# -------------------------------
+# jcurl.sh - Wrapper script to run jcurl CLI tool
+#
+# This script locates jcurl.jar in the same directory and executes it with
+# provided arguments. Simplifies usage by handling Java path detection and
+# JAR location automatically.
 
 # Find the JAR in the same directory as this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
