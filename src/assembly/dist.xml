@@ -16,6 +16,9 @@
             <directory>scripts</directory>
             <outputDirectory>/</outputDirectory>
             <fileMode>0755</fileMode>
+            <excludes>
+                <exclude>test-readme.sh</exclude>
+            </excludes>
         </fileSet>
 
         <!-- Documentation -->

@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Change to project root directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_ROOT"
+
 README="README.md"
 TARGET_DIR="target"
 JAR=$(find "$TARGET_DIR" -maxdepth 1 -type f -name "jcurl-*-jar-with-dependencies.jar" | sort | tail -n 1)
 REAL_JAR=$(realpath "$JAR")
 DRY_RUN=false
 
-if [[ -n "$JAVA_HOME" ]]; then
+if [[ -n "${JAVA_HOME:-}" ]]; then
   JAVA_EXE="$JAVA_HOME/bin/java"
 else
   JAVA_EXE="java"
